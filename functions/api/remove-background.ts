@@ -1,5 +1,3 @@
-export const config = { runtime: 'edge' }
-
 interface Env {
   REMOVE_BG_API_KEY: string
 }
@@ -33,8 +31,15 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       )
     }
 
-    const buf = Buffer.from(await removeRes.arrayBuffer())
-    const b64 = buf.toString('base64')
+    const arrayBuffer = await removeRes.arrayBuffer()
+    const bytes = new Uint8Array(arrayBuffer)
+
+    // Convert to base64 without Buffer
+    let binary = ''
+    for (let i = 0; i < bytes.byteLength; i++) {
+      binary += String.fromCharCode(bytes[i])
+    }
+    const b64 = btoa(binary)
 
     return new Response(JSON.stringify({ image: b64 }), {
       headers: { 'Content-Type': 'application/json' },
