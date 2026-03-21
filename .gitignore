@@ -1,0 +1,2 @@
+node_modules/\ndist/\n.env\n*.local
+api-server.mjs
